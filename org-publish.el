@@ -1,9 +1,13 @@
 #!/bin/sh
 ":"; exec emacs --quick --script "$0" -- "$@" # -*-emacs-lisp-*-
 
-;;(setq debug-on-error t)
+(prefer-coding-system 'utf-8)
+
+(setq debug-on-error t)
 
 (defvar publish/org-dir (expand-file-name "./"))
+(defvar publish/archive-dir (expand-file-name "./archive/"))
+(defvar publish/archive-out-dir (expand-file-name "./publish/archive"))
 (defvar publish/publish-dir (expand-file-name "./publish/output/"))
 
 ;; Over complicated option handling
@@ -63,6 +67,7 @@
                             org-plus-contrib
                             css-mode
                             ess
+                            htmlize
                             gnuplot)
   "A list of packages to ensure are installed at launch.")
 
@@ -98,6 +103,7 @@
 (add-to-list 'publish/packages 'org-plus-contrib)
 (require 'org)
 (require 'org-agenda)
+(require 'ox-odt)
 
 ;; active Babel languages
 (org-babel-do-load-languages
@@ -116,11 +122,21 @@
 (setq org-confirm-babel-evaluate nil)
 (setq org-export-babel-evaluate t)
 
+;; Use unicode characters for checkboxes and such
+;; DO NOT USE THIS, IT BREAKS <>
+;;(setq org-html-use-unicode-chars t)
+
 ;; Don't make backups
 (setq make-backup-files nil)
 
-;; Export planning informtation by default
+;; Publish planning information by default
 (setq org-export-with-planning t)
+
+;; Add :class "sortable" to the default table arguments
+(setq org-html-table-default-attributes '(:border "2" :cellspacing "0" :cellpadding "6" :rules "groups" :frame "hsides" :class "sortable"))
+
+;; Fontify source
+(setq org-html-htmlize-output-type 'css)
 
 ;; Use unicode characters for checkboxes
 (defun unicode-for-org-html-checkbox (checkbox)
@@ -132,8 +148,64 @@
 (defadvice org-html-checkbox (around unicode-checkbox activate)
   (setq ad-return-value (unicode-for-org-html-checkbox (ad-get-arg 0))))
 
+;; The ox-odt is missing this
+(defun org-odt-publish-to-odt (plist filename pub-dir)
+  "Publish an org file to ODT.
+
+FILENAME is the filename of the Org file to be published.  PLIST
+is the property list for the given project.  PUB-DIR is the
+publishing directory.
+
+Return output file name."
+  (let* ((org-inhibit-startup t)
+         (visitingp (find-buffer-visiting filename))
+         (work-buffer (or visitingp (find-file-noselect filename))))
+    (prog1 (with-current-buffer work-buffer
+             (let ((outfile (concat (file-name-sans-extension filename) ".odt")))
+               (message (concat "Making " outfile))
+               (org-odt--export-wrap
+                outfile
+                (let* ((org-odt-embedded-images-count 0)
+                       (org-odt-embedded-formulas-count 0)
+                       (org-odt-automatic-styles nil)
+                       (org-odt-object-counters nil)
+                       ;; Let `htmlfontify' know that we are interested in collecting
+                       ;; styles.
+                       (hfy-user-sheet-assoc nil))
+                  ;; Initialize content.xml and kick-off the export process.
+                  (let ((output (org-export-as 'odt nil nil nil plist))
+                        (out-buf (progn
+                                   (require 'nxml-mode)
+                                   (let ((nxml-auto-insert-xml-declaration-flag nil))
+                                     (find-file-noselect
+                                      (concat org-odt-zip-dir "content.xml") t)))))
+                    (with-current-buffer out-buf (erase-buffer) (insert output)))))
+               (org-publish-attachment plist outfile pub-dir))))))
+
+;; We don't want any titles or subtitles as the content.xml has those defined
+(defadvice org-odt-template (after advice-org-odt-template activate)
+  (dolist (style-name '("OrgTitle" "OrgSubtitle"))
+    (setq ad-return-value (replace-regexp-in-string (format "<text:p text:style-name=\"%s\">\n?.*</text:p>" style-name) "" ad-return-value))
+    (setq ad-return-value (replace-regexp-in-string (format "<text:p text:style-name=\"%s\"/>" style-name) "" ad-return-value))))
+
+;; Embed these files in ODT
+(setq org-odt-inline-image-rules '(("file" . "\\.\\(jpeg\\|jpg\\|png\\|gif\\|svg\\)\\'")))
+
+;; Use unoconv to do conversion
+;;(setq org-odt-convert-process "unoconv")
+
+;; Convert to docx after producing odt
+;;(setq org-odt-preferred-output-format "doc")
+
 ;; Store the timestamp in the publish directory
-(defvar org-publish-timestamp-directory (concat publish/publish-dir "/.org-timestamps/"))
+(setq org-publish-timestamp-directory (concat publish/publish-dir "/.org-timestamps/"))
+
+;; Use publish/{styles,content}.xml for ODT files
+(setq org-odt-styles-file (concat publish/org-dir "publish/styles.xml"))
+(setq org-odt-content-template-file (concat publish/org-dir "publish/content.xml"))
+
+;; Clear the project list, probably not needed...
+(setq org-publish-project-alist nil)
 
 ;; Define the dynamic project, which is the org files to process
 (defvar publish/notes-public
