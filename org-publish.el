@@ -140,7 +140,7 @@
   (list "notes-public"
         :base-directory publish/org-dir
         :recursive t
-        :exclude "publish\\|calendars\\|.PRIVATE"
+        :exclude "^\\(publish\\|calendars\\|.PRIVATE\\)"
         :publishing-directory publish/publish-dir
         :publishing-function '(org-html-publish-to-html)
         :section-numbers nil
