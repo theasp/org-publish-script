@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SHNAME=$(basename $0)
+TMPDIR=$(mktemp -u -d "/tmp/${SHNAME}-XXXXXX")
+CURDUR=$(pwd)
+
+testPublishSmall() {
+    mkdir -p $TMPDIR
+    mkdir $TMPDIR/in
+    mkdir $TMPDIR/out
+
+    cat > $TMPDIR/in/test.org <<EOF
+Test
+EOF
+
+    cat > $TMPDIR/org-publish-init.el <<EOF
+(setq make-backup-files nil)
+(org-publish/publish-project
+ '("org-dynamic"
+   :base-directory "$TMPDIR/in"
+   :recursive t
+   :publishing-directory "$TMPDIR/out"
+   :publishing-function org-html-publish-to-html))
+EOF
+    
+    CMD="./org-publish $TMPDIR/org-publish-init.el"
+    
+    $CMD 1> /tmp/poop.log 2>&1
+    assertEquals "Wrong return code" $? 0 || return
+
+    assertTrue "Missing output file" "[ -e '$TMPDIR/out/test.html' ]"
+
+    rm -rf $TMPDIR
+}
+
+. shunit2
