@@ -14,8 +14,6 @@
                                 htmlize
                                 gnuplot))
 
-(require 'ox-odt)
-
 ;; active Babel languages
 ;; (org-babel-do-load-languages
 ;;  'org-babel-load-languages
@@ -59,6 +57,9 @@
         (t "")))
 (defadvice org-html-checkbox (around unicode-checkbox activate)
   (setq ad-return-value (unicode-for-org-html-checkbox (ad-get-arg 0))))
+
+
+;; (require 'ox-odt)
 
 ;; Unfortunatly ox-odt doesn't seem to publish properly.  Uncommenting
 ;; the following defun may help:
