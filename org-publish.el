@@ -1,3 +1,6 @@
+#!/bin/sh
+":"; exec emacs --quick --script "$0" -- "$@" # -*-emacs-lisp-*-
+
 ;; Load stuff out of ~/.emacs.d/
 (unless (require 'package nil t)
   (load
