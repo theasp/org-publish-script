@@ -22,12 +22,6 @@
     (when file
       (setq org-publish/init file))))
 
-;; Load stuff out of ~/.emacs.d/
-(unless (require 'package nil t)
-  (load
-   (expand-file-name "~/.emacs.d/elpa/package.el")))
-(package-initialize)
-
 (org-publish/run-init)
 
 (kill-emacs 0)

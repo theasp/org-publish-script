@@ -1,9 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Org config
-(require 'org)
-
-(setq debug-on-error t)
-
 (defvar org-publish/init "org-publish-init.el"
   "The name of the file to run org-publish from when running as a
   script")
