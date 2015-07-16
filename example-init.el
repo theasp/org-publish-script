@@ -126,6 +126,3 @@
    :exclude "^\\(publish\\|.PRIVATE\\)$"
    :publishing-directory "~/public_html/org/"
    :publishing-function org-publish-attachment))
-
-;; Copy the htaccess file in place
-;; (copy-file "~/.org/.htaccess" "~/public_html/org/.htaccess" t)
