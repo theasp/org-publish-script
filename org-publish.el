@@ -31,7 +31,7 @@
   "Install packages listed in org-publish/packages"
   (interactive)
   (remove-duplicates packages)
-  (unless (packages-installed-p packages)
+  (unless (org-publish/packages-installed-p packages)
     ;; check for new packages (package versions)
     (package-refresh-contents)
     ;; install the missing packages
