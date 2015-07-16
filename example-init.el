@@ -7,7 +7,6 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
 (org-publish/install-packages '(graphviz-dot-mode
-                                ido-vertical-mode
                                 lua-mode
                                 org-plus-contrib
                                 css-mode
