@@ -18,7 +18,7 @@ infodir = $(datarootdir)/info
 INSTALL_BIN=install
 INSTALL_DATA=install -m 0644
 
-ORG_PUBLISH=org-publish-script-head.el org-publish.el org-publish-script.el
+ORG_PUBLISH=org-publish.el
 
 DESTS=org-publish
 
