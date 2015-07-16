@@ -36,7 +36,7 @@
     (package-refresh-contents)
     ;; install the missing packages
     (dolist (package packages)
-      (when (not (org-publish/packages-installed-p package))
+      (when (not (package-installed-p package))
         (with-demoted-errors (package-install package))))))
 
 (defun org-publish/publish-project (project)
