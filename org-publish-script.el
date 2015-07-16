@@ -19,7 +19,8 @@
         (kill-emacs 1))
        (t (push option names)))))
   (let ((file (pop names)))
-    (when file (setq org-publish/init file))))
+    (when file
+      (setq org-publish/init file))))
 
 ;; Load stuff out of ~/.emacs.d/
 (unless (require 'package nil t)
