@@ -43,7 +43,7 @@ the publish directory"
   (let* ((base-dir (plist-get (cdr project) :base-directory))
          (publish-dir (plist-get (cdr project) :publishing-directory))
          (org-publish-timestamp-directory (concat publish-dir "/.org-timestamps/" (car project))))
-    (plist-set (cdr project) :base-directory (file-truename base-dir))
+    (plist-put (cdr project) :base-directory (file-truename base-dir))
     (org-publish-project project)))
 
 ;; Over complicated option handling
