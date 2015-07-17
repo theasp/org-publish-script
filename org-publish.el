@@ -47,8 +47,14 @@
         (with-demoted-errors (package-install package))))))
 
 (defun org-publish/publish-project (project)
-  (let* ((publish-dir (plist-get (cdr project) :publishing-directory))
+  "Publish a project after set the base-directory to be an
+absolute path to work around stupid behaviour from
+org-publish-org-sitemap and set the timestamp directory to be in
+the publish directory"
+  (let* ((base-dir (plist-get (cdr project) :base-directory))
+         (publish-dir (plist-get (cdr project) :publishing-directory))
          (org-publish-timestamp-directory (concat publish-dir "/.org-timestamps/" (car project))))
+    (plist-set (cdr project) :base-directory (file-truename base-dir))
     (org-publish-project project)))
 
 (defun org-publish/run-init ()
