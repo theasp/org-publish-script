@@ -9,33 +9,22 @@
 
 (setq debug-on-error t)
 
-;;;;;;;;;;;;;;;;;;;;
-;; Org config
-(defvar org-publish/init "org-publish-init.el"
+(defvar org-publish/init-file "org-publish-init.el"
   "The name of the file to run org-publish from when running as a
   script")
 (defvar org-publish/debug nil
   "Show extra debugging output")
-(defvar org-publish/packages '()
-  "A list of packages to ensure are installed at launch.")
-
-;;;;;;;;;;;;;;;;;;;;
-;; Package Handling
-
-(unless (require 'package nil t)
-  (load
-   (expand-file-name "~/.emacs.d/elpa/package.el")))
-(package-initialize)
 
 (require 'cl)
 
 (defun org-publish/packages-installed-p (packages)
+  "Check to see if all of the packages listed are installed"
   (loop for p in packages
         when (not (package-installed-p p)) do (return nil)
         finally (return t)))
 
 (defun org-publish/install-packages (packages)
-  "Install packages listed in org-publish/packages"
+  "Install missing packages"
   (interactive)
   (remove-duplicates packages)
   (unless (org-publish/packages-installed-p packages)
@@ -57,12 +46,6 @@ the publish directory"
     (plist-set (cdr project) :base-directory (file-truename base-dir))
     (org-publish-project project)))
 
-(defun org-publish/run-init ()
-  (load org-publish/init))
-
-;; Clear the project list, probably not needed...
-(setq org-publish-project-alist nil)
-
 ;; Over complicated option handling
 (let (options-done
       names)
@@ -82,8 +65,8 @@ the publish directory"
        (t (push option names)))))
   (let ((file (pop names)))
     (when file
-      (setq org-publish/init file))))
+      (setq org-publish/init-file file))))
 
-(org-publish/run-init)
+(load org-publish/init-file)
 
 (kill-emacs 0)
