@@ -16,6 +16,7 @@
   "Show extra debugging output")
 
 (require 'cl)
+(require 'org)
 
 (defun org-publish/packages-installed-p (packages)
   "Check to see if all of the packages listed are installed"
