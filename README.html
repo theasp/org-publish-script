@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Org Publish Script</title>
+<!-- 2015-07-20 Mon 10:09 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Andrew Phillips" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Org Publish Script</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Examples</a>
+<ul>
+<li><a href="#sec-1-1">1.1. Using Mini-CI and git</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1. Step 1: Add Org Publish Init Script to Org</a></li>
+<li><a href="#sec-1-1-2">1.1.2. Step 2: Install Mini-CI</a></li>
+<li><a href="#sec-1-1-3">1.1.3. Step 3: Set up Mini-CI Project</a></li>
+<li><a href="#sec-1-1-4">1.1.4. Step 4: Start the Mini-CI Daemon</a></li>
+<li><a href="#sec-1-1-5">1.1.5. Step 5: Add Hook to git that Notifies Mini-CI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Examples</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Using Mini-CI and git</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+This assumes you have a git repository in <code>~/.git-repo/org.git</code> on the same machine you will be running Mini-CI on.  Adjust as needed.  
+</p>
+</div>
+
+<div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> Step 1: Add Org Publish Init Script to Org</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Make the publish directory:
+</p>
+<pre class="example">
+mkdir ~/org/publish
+</pre>
+
+<p>
+Put the following in <code>~/org/publish/org-publish-init.el</code>:
+</p>
+<pre class="example">
+(prefer-coding-system 'utf-8)
+
+;; Add extra elpa repos
+(add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("mepla-stable" . "http://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+
+(org-publish/install-packages '(graphviz-dot-mode
+                                lua-mode
+                                org-plus-contrib
+                                css-mode
+                                ess
+                                htmlize
+                                gnuplot))
+
+(require 'ox-odt)
+
+;; active Babel languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (awk . t)
+   (sh . t)
+   (perl . t)
+   (dot . t)
+   (calc . t)
+   (R . t)
+   (gnuplot . t)
+   (awk . t)))
+
+;; Allow babel to execute commands and not ask about them.  Note that
+;; this is unsafe.
+(setq org-confirm-babel-evaluate nil)
+(setq org-export-babel-evaluate t)
+
+;; Don't make backups
+(setq make-backup-files nil)
+
+;; Publish planning information by default
+(setq org-export-with-planning t)
+
+;; Fontify source
+(setq org-html-htmlize-output-type 'css)
+
+;; Use unicode characters for checkboxes.  Comment to disable
+(defun unicode-for-org-html-checkbox (checkbox)
+  "Format CHECKBOX into Unicode Characters."
+  (case checkbox (on "&amp;#x22A0;")
+        (off "&amp;#x25FB;")
+        (trans "&amp;#x22A1;")
+        (t "")))
+(defadvice org-html-checkbox (around unicode-checkbox activate)
+  (setq ad-return-value (unicode-for-org-html-checkbox (ad-get-arg 0))))
+
+(org-publish/publish-project
+ '("org-dynamic"
+   :base-directory "./"
+   :recursive t
+   :exclude "^\\(publish\\|calendars\\|.PRIVATE\\)$"
+   :publishing-directory "./publish/output"
+   :publishing-function org-html-publish-to-html
+   :auto-sitemap t
+   :sitemap-title "My Org-Mode Files"
+   :sitemap-filename "index.org"
+   :sitemap-ignore-case t))
+
+(org-publish/publish-project
+ '("org-static"
+   :base-directory "./"
+   :base-extension "js\\|css\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|svg"
+   :recursive t
+   :exclude "^\\(publish\\|.PRIVATE\\)$"
+   :publishing-directory "./publish/output"
+   :publishing-function org-publish-attachment))
+</pre>
+
+<p>
+Check the file in and push to your repository.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> Step 2: Install Mini-CI</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+See <a href="https://github.com/theasp/mini-ci">Mini-CI</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> Step 3: Set up Mini-CI Project</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+Make a directory:
+</p>
+<pre class="example">
+mkdir -p ~/var/mini-ci/org
+</pre>
+
+<p>
+Put the follwing into <code>~/var/mini-ci/org/config</code>:
+</p>
+<pre class="example">
+REPO_PLUGIN=git
+GIT_URL=~/.git-repo/andrew-org
+POLL_FREQ=0
+BUILD_KEEP=5
+</pre>
+
+<p>
+Make the tasks directory:
+</p>
+<pre class="example">
+mkdir ~/var/mini-ci/org/tasks.d
+</pre>
+
+<p>
+Put the following into <code>~/var/mini-ci/org/tasks.d/500-org-publish</code>
+</p>
+<pre class="example">
+#!/bin/bash
+set -ex
+
+org-publish ./publish/org-publish-init.el
+</pre>
+
+<p>
+Put the following into <code>~/var/mini-ci/org/tasks.d/800-rsync-to-web</code>:
+</p>
+<pre class="example">
+#!/bin/bash
+set -ex
+
+OUTDIR=./publish/output
+PUBLISHDIR=~/public_html/org
+
+rsync --delete -a $OUTDIR/ $PUBLISHDIR/
+</pre>
+
+<p>
+Make the tasks executable:
+</p>
+<pre class="example">
+chmod +x ~/var/mini-ci/org/tasks.d/*
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-4" class="outline-4">
+<h4 id="sec-1-1-4"><span class="section-number-4">1.1.4</span> Step 4: Start the Mini-CI Daemon</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+Start the Mini-CI daemon by running: 
+</p>
+<pre class="example">
+mini-ci -d ~/var/mini-ci/org poll
+</pre>
+
+<p>
+If everything works, you should have files in your web directory, otherwise examine the Mini-CI log files.
+</p>
+
+<p>
+Add the following to cron to ensure the daemon is always running:
+</p>
+<pre class="example">
+*/5 * * * * test -d var/mini-ci/org &amp;&amp; mini-ci --oknodo -d var/mini-ci/org poll
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-5" class="outline-4">
+<h4 id="sec-1-1-5"><span class="section-number-4">1.1.5</span> Step 5: Add Hook to git that Notifies Mini-CI</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<p>
+Add the following to <code>~/.git-repo/org.git/hooks/post-update</code>:
+</p>
+<pre class="example">
+#!/bin/bash
+
+set -e
+
+mini-ci -d ~/var/mini-ci/org -m update
+</pre>
+
+<p>
+Make the hook executable:
+</p>
+<pre class="example">
+chmod +x ~/.git-repo/org.git/hooks/post-update
+</pre>
+
+<p>
+Now anytime something is pushed to your repository it will trigger Mini-CI to build a new copy of the website.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Andrew Phillips &lt;<a href="mailto:theasp@gmail.com">theasp@gmail.com</a>&gt;</p>
+<p class="date">Date: 2015-07-20 Mon 10:09</p>
+</div>
+</body>
+</html>

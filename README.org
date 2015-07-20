@@ -1,0 +1,182 @@
+#+TITLE: Org Publish Script
+#+OPTIONS: toc:4 H:4 p:t
+#+AUTHOR: Andrew Phillips
+#+EMAIL: theasp@gmail.com
+
+* Examples
+** Using Mini-CI and git
+This assumes you have a git repository in =~/.git-repo/org.git= on the same machine you will be running Mini-CI on.  Adjust as needed.  
+
+*** Step 1: Add Org Publish Init Script to Org
+
+Make the publish directory:
+#+BEGIN_EXAMPLE sh
+mkdir ~/org/publish
+#+END_EXAMPLE
+
+Put the following in =~/org/publish/org-publish-init.el=:
+#+BEGIN_EXAMPLE elisp
+  (prefer-coding-system 'utf-8)
+
+  ;; Add extra elpa repos
+  (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("mepla-stable" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+
+  (org-publish/install-packages '(graphviz-dot-mode
+                                  lua-mode
+                                  org-plus-contrib
+                                  css-mode
+                                  ess
+                                  htmlize
+                                  gnuplot))
+
+  (require 'ox-odt)
+
+  ;; active Babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (awk . t)
+     (sh . t)
+     (perl . t)
+     (dot . t)
+     (calc . t)
+     (R . t)
+     (gnuplot . t)
+     (awk . t)))
+
+  ;; Allow babel to execute commands and not ask about them.  Note that
+  ;; this is unsafe.
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-babel-evaluate t)
+
+  ;; Don't make backups
+  (setq make-backup-files nil)
+
+  ;; Publish planning information by default
+  (setq org-export-with-planning t)
+
+  ;; Fontify source
+  (setq org-html-htmlize-output-type 'css)
+
+  ;; Use unicode characters for checkboxes.  Comment to disable
+  (defun unicode-for-org-html-checkbox (checkbox)
+    "Format CHECKBOX into Unicode Characters."
+    (case checkbox (on "&#x22A0;")
+          (off "&#x25FB;")
+          (trans "&#x22A1;")
+          (t "")))
+  (defadvice org-html-checkbox (around unicode-checkbox activate)
+    (setq ad-return-value (unicode-for-org-html-checkbox (ad-get-arg 0))))
+
+  (org-publish/publish-project
+   '("org-dynamic"
+     :base-directory "./"
+     :recursive t
+     :exclude "^\\(publish\\|calendars\\|.PRIVATE\\)$"
+     :publishing-directory "./publish/output"
+     :publishing-function org-html-publish-to-html
+     :auto-sitemap t
+     :sitemap-title "My Org-Mode Files"
+     :sitemap-filename "index.org"
+     :sitemap-ignore-case t))
+
+  (org-publish/publish-project
+   '("org-static"
+     :base-directory "./"
+     :base-extension "js\\|css\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|svg"
+     :recursive t
+     :exclude "^\\(publish\\|.PRIVATE\\)$"
+     :publishing-directory "./publish/output"
+     :publishing-function org-publish-attachment))
+#+END_EXAMPLE
+
+Check the file in and push to your repository.
+
+*** Step 2: Install Mini-CI
+
+See [[https://github.com/theasp/mini-ci][Mini-CI]].
+
+*** Step 3: Set up Mini-CI Project
+
+Make a directory:
+#+BEGIN_EXAMPLE sh
+mkdir -p ~/var/mini-ci/org
+#+END_EXAMPLE
+
+Put the follwing into =~/var/mini-ci/org/config=:
+#+BEGIN_EXAMPLE sh
+REPO_PLUGIN=git
+GIT_URL=~/.git-repo/andrew-org
+POLL_FREQ=0
+BUILD_KEEP=5
+#+END_EXAMPLE
+
+Make the tasks directory:
+#+BEGIN_EXAMPLE sh
+mkdir ~/var/mini-ci/org/tasks.d
+#+END_EXAMPLE
+
+Put the following into =~/var/mini-ci/org/tasks.d/500-org-publish=
+#+BEGIN_EXAMPLE sh
+#!/bin/bash
+set -ex
+
+org-publish ./publish/org-publish-init.el
+#+END_EXAMPLE
+
+Put the following into =~/var/mini-ci/org/tasks.d/800-rsync-to-web=:
+#+BEGIN_EXAMPLE sh
+#!/bin/bash
+set -ex
+
+OUTDIR=./publish/output
+PUBLISHDIR=~/public_html/org
+
+rsync --delete -a $OUTDIR/ $PUBLISHDIR/
+#+END_EXAMPLE
+
+Make the tasks executable:
+#+BEGIN_EXAMPLE sh
+chmod +x ~/var/mini-ci/org/tasks.d/*
+#+END_EXAMPLE
+
+*** Step 4: Start the Mini-CI Daemon
+
+Start the Mini-CI daemon by running: 
+#+BEGIN_EXAMPLE sh
+mini-ci -d ~/var/mini-ci/org poll
+#+END_EXAMPLE
+
+If everything works, you should have files in your web directory, otherwise examine the Mini-CI log files.
+
+Add the following to cron to ensure the daemon is always running:
+#+BEGIN_EXAMPLE
+*/5 * * * * test -d var/mini-ci/org && mini-ci --oknodo -d var/mini-ci/org poll
+#+END_EXAMPLE
+
+*** Step 5: Add Hook to git that Notifies Mini-CI
+
+Add the following to =~/.git-repo/org.git/hooks/post-update=:
+#+BEGIN_EXAMPLE sh
+#!/bin/bash
+
+set -e
+
+mini-ci -d ~/var/mini-ci/org -m update
+#+END_EXAMPLE
+
+Make the hook executable:
+#+BEGIN_EXAMPLE
+chmod +x ~/.git-repo/org.git/hooks/post-update
+#+END_EXAMPLE
+
+Now anytime something is pushed to your repository it will trigger Mini-CI to build a new copy of the website.
+
+# Local variables:
+# org-ascii-charset: utf-8
+# org-ascii-verbatim-format: "%s"
+# eval: (add-hook 'after-save-hook '(lambda () (org-ascii-export-to-ascii) (org-html-export-to-html)) nil t)
+# End:
