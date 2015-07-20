@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Org Publish Script</title>
-<!-- 2015-07-20 Mon 10:28 -->
+<!-- 2015-07-20 Mon 12:55 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Andrew Phillips" />
@@ -176,90 +176,94 @@ This assumes you have a git repository in <code>~/.git-repo/org.git</code> on th
 <p>
 Make the publish directory:
 </p>
-<pre class="example">
-mkdir ~/org/publish
+<div class="org-src-container">
+
+<pre class="src src-sh">mkdir ~/org/publish
 </pre>
+</div>
 
 <p>
 Put the following in <code>~/org/publish/org-publish-init.el</code>:
 </p>
-<pre class="example">
-(prefer-coding-system 'utf-8)
+<div class="org-src-container">
 
-;; Add extra elpa repos
-(add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("mepla-stable" . "http://stable.melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+<pre class="src src-elisp"><span style="color: #8c8c8c;">(</span>prefer-coding-system 'utf-8<span style="color: #8c8c8c;">)</span>
 
-(org-publish/install-packages '(graphviz-dot-mode
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">Add extra elpa repos</span>
+<span style="color: #8c8c8c;">(</span>add-to-list 'package-archives '<span style="color: #93a8c6;">(</span><span style="color: #ffa07a;">"ELPA"</span> . <span style="color: #ffa07a;">"http://tromey.com/elpa/"</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+<span style="color: #8c8c8c;">(</span>add-to-list 'package-archives '<span style="color: #93a8c6;">(</span><span style="color: #ffa07a;">"gnu"</span> . <span style="color: #ffa07a;">"http://elpa.gnu.org/packages/"</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+<span style="color: #8c8c8c;">(</span>add-to-list 'package-archives '<span style="color: #93a8c6;">(</span><span style="color: #ffa07a;">"mepla-stable"</span> . <span style="color: #ffa07a;">"http://stable.melpa.org/packages/"</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+<span style="color: #8c8c8c;">(</span>add-to-list 'package-archives '<span style="color: #93a8c6;">(</span><span style="color: #ffa07a;">"org"</span> . <span style="color: #ffa07a;">"http://orgmode.org/elpa/"</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+
+<span style="color: #8c8c8c;">(</span>org-publish/install-packages '<span style="color: #93a8c6;">(</span>graphviz-dot-mode
                                 lua-mode
                                 org-plus-contrib
                                 css-mode
                                 ess
                                 htmlize
-                                gnuplot))
+                                gnuplot<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 
-(require 'ox-odt)
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">require</span> '<span style="color: #7fffd4;">ox-odt</span><span style="color: #8c8c8c;">)</span>
 
-;; active Babel languages
-(org-babel-do-load-languages
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">active Babel languages</span>
+<span style="color: #8c8c8c;">(</span>org-babel-do-load-languages
  'org-babel-load-languages
- '((emacs-lisp . t)
-   (awk . t)
-   (sh . t)
-   (perl . t)
-   (dot . t)
-   (calc . t)
-   (R . t)
-   (gnuplot . t)
-   (awk . t)))
+ '<span style="color: #93a8c6;">(</span><span style="color: #b0b1a3;">(</span>emacs-lisp . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>awk . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>sh . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>perl . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>dot . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>calc . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>R . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>gnuplot . t<span style="color: #b0b1a3;">)</span>
+   <span style="color: #b0b1a3;">(</span>awk . t<span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 
-;; Allow babel to execute commands and not ask about them.  Note that
-;; this is unsafe.
-(setq org-confirm-babel-evaluate nil)
-(setq org-export-babel-evaluate t)
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">Allow babel to execute commands and not ask about them.  Note that</span>
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">this is unsafe.</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">setq</span> org-confirm-babel-evaluate nil<span style="color: #8c8c8c;">)</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">setq</span> org-export-babel-evaluate t<span style="color: #8c8c8c;">)</span>
 
-;; Don't make backups
-(setq make-backup-files nil)
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">Don't make backups</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">setq</span> make-backup-files nil<span style="color: #8c8c8c;">)</span>
 
-;; Publish planning information by default
-(setq org-export-with-planning t)
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">Publish planning information by default</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">setq</span> org-export-with-planning t<span style="color: #8c8c8c;">)</span>
 
-;; Fontify source
-(setq org-html-htmlize-output-type 'css)
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">Fontify source</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">setq</span> org-html-htmlize-output-type 'css<span style="color: #8c8c8c;">)</span>
 
-;; Use unicode characters for checkboxes.  Comment to disable
-(defun unicode-for-org-html-checkbox (checkbox)
-  "Format CHECKBOX into Unicode Characters."
-  (case checkbox (on "&amp;#x22A0;")
-        (off "&amp;#x25FB;")
-        (trans "&amp;#x22A1;")
-        (t "")))
-(defadvice org-html-checkbox (around unicode-checkbox activate)
-  (setq ad-return-value (unicode-for-org-html-checkbox (ad-get-arg 0))))
+<span style="color: #ff7f24;">;; </span><span style="color: #ff7f24;">Use unicode characters for checkboxes.  Comment to disable</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">defun</span> <span style="color: #87cefa;">unicode-for-org-html-checkbox</span> <span style="color: #93a8c6;">(</span>checkbox<span style="color: #93a8c6;">)</span>
+  <span style="color: #ffa07a;">"Format CHECKBOX into Unicode Characters."</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #00ffff;">case</span> checkbox <span style="color: #b0b1a3;">(</span>on <span style="color: #ffa07a;">"&amp;#x22A0;"</span><span style="color: #b0b1a3;">)</span>
+        <span style="color: #b0b1a3;">(</span>off <span style="color: #ffa07a;">"&amp;#x25FB;"</span><span style="color: #b0b1a3;">)</span>
+        <span style="color: #b0b1a3;">(</span>trans <span style="color: #ffa07a;">"&amp;#x22A1;"</span><span style="color: #b0b1a3;">)</span>
+        <span style="color: #b0b1a3;">(</span>t <span style="color: #ffa07a;">""</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+<span style="color: #8c8c8c;">(</span><span style="color: #00ffff;">defadvice</span> <span style="color: #87cefa;">org-html-checkbox</span> <span style="color: #93a8c6;">(</span>around unicode-checkbox activate<span style="color: #93a8c6;">)</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #00ffff;">setq</span> ad-return-value <span style="color: #b0b1a3;">(</span>unicode-for-org-html-checkbox <span style="color: #97b098;">(</span>ad-get-arg 0<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 
-(org-publish/publish-project
- '("org-dynamic"
-   :base-directory "./"
-   :recursive t
-   :exclude "^\\(publish\\|calendars\\|.PRIVATE\\)$"
-   :publishing-directory "./publish/output"
-   :publishing-function org-html-publish-to-html
-   :auto-sitemap t
-   :sitemap-title "My Org-Mode Files"
-   :sitemap-filename "index.org"
-   :sitemap-ignore-case t))
+<span style="color: #8c8c8c;">(</span>org-publish/publish-project
+ '<span style="color: #93a8c6;">(</span><span style="color: #ffa07a;">"org-dynamic"</span>
+   <span style="color: #b0c4de;">:base-directory</span> <span style="color: #ffa07a;">"./"</span>
+   <span style="color: #b0c4de;">:recursive</span> t
+   <span style="color: #b0c4de;">:exclude</span> <span style="color: #ffa07a;">"^</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">(</span><span style="color: #ffa07a;">publish</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">calendars</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">.PRIVATE</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">)</span><span style="color: #ffa07a;">$"</span>
+   <span style="color: #b0c4de;">:publishing-directory</span> <span style="color: #ffa07a;">"./publish/output"</span>
+   <span style="color: #b0c4de;">:publishing-function</span> org-html-publish-to-html
+   <span style="color: #b0c4de;">:auto-sitemap</span> t
+   <span style="color: #b0c4de;">:sitemap-title</span> <span style="color: #ffa07a;">"My Org-Mode Files"</span>
+   <span style="color: #b0c4de;">:sitemap-filename</span> <span style="color: #ffa07a;">"index.org"</span>
+   <span style="color: #b0c4de;">:sitemap-ignore-case</span> t<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 
-(org-publish/publish-project
- '("org-static"
-   :base-directory "./"
-   :base-extension "js\\|css\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|svg"
-   :recursive t
-   :exclude "^\\(publish\\|.PRIVATE\\)$"
-   :publishing-directory "./publish/output"
-   :publishing-function org-publish-attachment))
+<span style="color: #8c8c8c;">(</span>org-publish/publish-project
+ '<span style="color: #93a8c6;">(</span><span style="color: #ffa07a;">"org-static"</span>
+   <span style="color: #b0c4de;">:base-directory</span> <span style="color: #ffa07a;">"./"</span>
+   <span style="color: #b0c4de;">:base-extension</span> <span style="color: #ffa07a;">"js</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">css</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">png</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">jpg</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">gif</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">pdf</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">mp3</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">ogg</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">swf</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">svg"</span>
+   <span style="color: #b0c4de;">:recursive</span> t
+   <span style="color: #b0c4de;">:exclude</span> <span style="color: #ffa07a;">"^</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">(</span><span style="color: #ffa07a;">publish</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">|</span><span style="color: #ffa07a;">.PRIVATE</span><span style="color: #ffa07a; font-weight: bold;">\\</span><span style="color: #ffa07a; font-weight: bold;">)</span><span style="color: #ffa07a;">$"</span>
+   <span style="color: #b0c4de;">:publishing-directory</span> <span style="color: #ffa07a;">"./publish/output"</span>
+   <span style="color: #b0c4de;">:publishing-function</span> org-publish-attachment<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
+</div>
 
 <p>
 Check the file in and push to your repository.
@@ -282,56 +286,68 @@ See <a href="https://github.com/theasp/mini-ci">Mini-CI</a>.
 <p>
 Make a directory:
 </p>
-<pre class="example">
-mkdir -p ~/var/mini-ci/org
+<div class="org-src-container">
+
+<pre class="src src-sh">mkdir -p ~/var/mini-ci/org
 </pre>
+</div>
 
 <p>
 Put the follwing into <code>~/var/mini-ci/org/config</code>:
 </p>
-<pre class="example">
-REPO_PLUGIN=git
-GIT_URL=~/.git-repo/org
-POLL_FREQ=0
-BUILD_KEEP=5
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #eedd82;">REPO_PLUGIN</span>=git
+<span style="color: #eedd82;">GIT_URL</span>=~/.git-repo/org
+<span style="color: #eedd82;">POLL_FREQ</span>=0
+<span style="color: #eedd82;">BUILD_KEEP</span>=5
 </pre>
+</div>
 
 <p>
 Make the tasks directory:
 </p>
-<pre class="example">
-mkdir ~/var/mini-ci/org/tasks.d
+<div class="org-src-container">
+
+<pre class="src src-sh">mkdir ~/var/mini-ci/org/tasks.d
 </pre>
+</div>
 
 <p>
 Put the following into <code>~/var/mini-ci/org/tasks.d/500-org-publish</code>
 </p>
-<pre class="example">
-#!/bin/bash
-set -ex
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #ff7f24;">#</span><span style="color: #ff7f24;">!/bin/</span><span style="color: #00ffff;">bash</span>
+<span style="color: #b0c4de;">set</span> -ex
 
 org-publish ./publish/org-publish-init.el
 </pre>
+</div>
 
 <p>
 Put the following into <code>~/var/mini-ci/org/tasks.d/800-rsync-to-web</code>:
 </p>
-<pre class="example">
-#!/bin/bash
-set -ex
+<div class="org-src-container">
 
-OUTDIR=./publish/output
-PUBLISHDIR=~/public_html/org
+<pre class="src src-sh"><span style="color: #ff7f24;">#</span><span style="color: #ff7f24;">!/bin/</span><span style="color: #00ffff;">bash</span>
+<span style="color: #b0c4de;">set</span> -ex
 
-rsync --delete -a $OUTDIR/ $PUBLISHDIR/
+<span style="color: #eedd82;">OUTDIR</span>=./publish/output
+<span style="color: #eedd82;">PUBLISHDIR</span>=~/public_html/org
+
+rsync --delete -a $<span style="color: #eedd82;">OUTDIR</span>/ $<span style="color: #eedd82;">PUBLISHDIR</span>/
 </pre>
+</div>
 
 <p>
 Make the tasks executable:
 </p>
-<pre class="example">
-chmod +x ~/var/mini-ci/org/tasks.d/*
+<div class="org-src-container">
+
+<pre class="src src-sh">chmod +x ~/var/mini-ci/org/tasks.d/*
 </pre>
+</div>
 </div>
 </div>
 
@@ -341,9 +357,11 @@ chmod +x ~/var/mini-ci/org/tasks.d/*
 <p>
 Start the Mini-CI daemon by running: 
 </p>
-<pre class="example">
-mini-ci -d ~/var/mini-ci/org poll
+<div class="org-src-container">
+
+<pre class="src src-sh">mini-ci -d ~/var/mini-ci/org poll
 </pre>
+</div>
 
 <p>
 If everything works, you should have files in your web directory, otherwise examine the Mini-CI log files.
@@ -364,13 +382,15 @@ Add the following to cron to ensure the daemon is always running:
 <p>
 Add the following to <code>~/.git-repo/org.git/hooks/post-update</code>:
 </p>
-<pre class="example">
-#!/bin/bash
+<div class="org-src-container">
 
-set -e
+<pre class="src src-sh"><span style="color: #ff7f24;">#</span><span style="color: #ff7f24;">!/bin/</span><span style="color: #00ffff;">bash</span>
+
+<span style="color: #b0c4de;">set</span> -e
 
 mini-ci -d ~/var/mini-ci/org -m update
 </pre>
+</div>
 
 <p>
 Make the hook executable:
@@ -389,7 +409,7 @@ Now anytime something is pushed to your repository it will trigger Mini-CI to bu
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Andrew Phillips &lt;<a href="mailto:theasp@gmail.com">theasp@gmail.com</a>&gt;</p>
-<p class="date">Date: 2015-07-20 Mon 10:28</p>
+<p class="date">Date: 2015-07-20 Mon 12:55</p>
 </div>
 </body>
 </html>

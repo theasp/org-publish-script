@@ -10,12 +10,12 @@ This assumes you have a git repository in =~/.git-repo/org.git= on the same mach
 *** Step 1: Add Org Publish Init Script to Org
 
 Make the publish directory:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 mkdir ~/org/publish
-#+END_EXAMPLE
+#+END_SRC
 
 Put the following in =~/org/publish/org-publish-init.el=:
-#+BEGIN_EXAMPLE elisp
+#+BEGIN_SRC elisp
   (prefer-coding-system 'utf-8)
 
   ;; Add extra elpa repos
@@ -91,7 +91,7 @@ Put the following in =~/org/publish/org-publish-init.el=:
      :exclude "^\\(publish\\|.PRIVATE\\)$"
      :publishing-directory "./publish/output"
      :publishing-function org-publish-attachment))
-#+END_EXAMPLE
+#+END_SRC
 
 Check the file in and push to your repository.
 
@@ -102,33 +102,33 @@ See [[https://github.com/theasp/mini-ci][Mini-CI]].
 *** Step 3: Set up Mini-CI Project
 
 Make a directory:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 mkdir -p ~/var/mini-ci/org
-#+END_EXAMPLE
+#+END_SRC
 
 Put the follwing into =~/var/mini-ci/org/config=:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 REPO_PLUGIN=git
 GIT_URL=~/.git-repo/org
 POLL_FREQ=0
 BUILD_KEEP=5
-#+END_EXAMPLE
+#+END_SRC
 
 Make the tasks directory:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 mkdir ~/var/mini-ci/org/tasks.d
-#+END_EXAMPLE
+#+END_SRC
 
 Put the following into =~/var/mini-ci/org/tasks.d/500-org-publish=
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 #!/bin/bash
 set -ex
 
 org-publish ./publish/org-publish-init.el
-#+END_EXAMPLE
+#+END_SRC
 
 Put the following into =~/var/mini-ci/org/tasks.d/800-rsync-to-web=:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 #!/bin/bash
 set -ex
 
@@ -136,42 +136,42 @@ OUTDIR=./publish/output
 PUBLISHDIR=~/public_html/org
 
 rsync --delete -a $OUTDIR/ $PUBLISHDIR/
-#+END_EXAMPLE
+#+END_SRC
 
 Make the tasks executable:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 chmod +x ~/var/mini-ci/org/tasks.d/*
-#+END_EXAMPLE
+#+END_SRC
 
 *** Step 4: Start the Mini-CI Daemon
 
 Start the Mini-CI daemon by running: 
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 mini-ci -d ~/var/mini-ci/org poll
-#+END_EXAMPLE
+#+END_SRC
 
 If everything works, you should have files in your web directory, otherwise examine the Mini-CI log files.
 
 Add the following to cron to ensure the daemon is always running:
-#+BEGIN_EXAMPLE
+#+BEGIN_SRC
 */5 * * * * test -d var/mini-ci/org && mini-ci --oknodo -d var/mini-ci/org poll
-#+END_EXAMPLE
+#+END_SRC
 
 *** Step 5: Add Hook to git that Notifies Mini-CI
 
 Add the following to =~/.git-repo/org.git/hooks/post-update=:
-#+BEGIN_EXAMPLE sh
+#+BEGIN_SRC sh
 #!/bin/bash
 
 set -e
 
 mini-ci -d ~/var/mini-ci/org -m update
-#+END_EXAMPLE
+#+END_SRC
 
 Make the hook executable:
-#+BEGIN_EXAMPLE
+#+BEGIN_SRC
 chmod +x ~/.git-repo/org.git/hooks/post-update
-#+END_EXAMPLE
+#+END_SRC
 
 Now anytime something is pushed to your repository it will trigger Mini-CI to build a new copy of the website.
 
