@@ -141,7 +141,7 @@ Table of Contents
   Put the follwing into ~/var/mini-ci/org/config:
   ┌────
   │ REPO_PLUGIN=git
-  │ GIT_URL=~/.git-repo/andrew-org
+  │ GIT_URL=~/.git-repo/org
   │ POLL_FREQ=0
   │ BUILD_KEEP=5
   └────
